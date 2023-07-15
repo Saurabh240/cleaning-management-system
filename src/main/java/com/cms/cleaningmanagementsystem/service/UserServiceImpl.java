@@ -48,6 +48,6 @@ public class UserServiceImpl implements UserService {
     }
 
     public void deleteUser(String username) {
-        userRepository.deleteById(username);
+        userRepository.deleteByUsername(username);
     }
 }
