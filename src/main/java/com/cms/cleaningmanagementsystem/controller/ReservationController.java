@@ -3,6 +3,9 @@ package com.cms.cleaningmanagementsystem.controller;
 import com.cms.cleaningmanagementsystem.model.Reservation;
 import com.cms.cleaningmanagementsystem.service.ReservationService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/reservations")
@@ -16,6 +19,10 @@ public class ReservationController {
     @GetMapping("/{id}")
     public Reservation getReservationById(@PathVariable String id) {
         return reservationService.getReservationById(id);
+    }
+    @GetMapping("/list")
+    public List<Reservation> getAllReservations() {
+        return reservationService.getAllReservations();
     }
 
     @PostMapping
