@@ -272,7 +272,7 @@ const Clients = () => {
               </tr>
             </thead>
             <tbody>
-              <tr className="user-row" >
+              {/* <tr className="user-row" >
                 <td className="user-column">{`user.email`}</td>
                 <td className="user-column">{`user.firstName`}</td>
                 <td className="user-column">{`user.lastName`}</td>
@@ -315,10 +315,10 @@ const Clients = () => {
                     Supprimer
                   </button>
                 </td>
-              </tr>
+              </tr> */}
               {users.map((user) => (
                 <tr className="user-row" key={user.id}>
-                  <td className="user-column">{`user.email`}</td>
+                  <td className="user-column">{user.email}</td>
                   <td className="user-column">{user.firstName}</td>
                   <td className="user-column">{user.lastName}</td>
                   <td className="user-column">{user.address}</td>
@@ -342,7 +342,7 @@ const Clients = () => {
               ))}
             </tbody>
           </table>
-          {users.map((user) => (
+          {/* {users.map((user) => (
             <div className="user-row" key={user.id}>
               <div className="user-column">{user.email}</div>
               <div className="user-column">{user.firstName}</div>
@@ -367,7 +367,7 @@ const Clients = () => {
               </div>
 
             </div>
-          ))}
+          ))} */}
         </div>
 
         <Modal

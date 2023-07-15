@@ -137,7 +137,6 @@ export default function MultiStepForm() {
 
 
     let obj = {
-      "id": "",
       "customerId": "",
       "typeOfServices": selectedService,
       "frequency": selectedFrequency,
