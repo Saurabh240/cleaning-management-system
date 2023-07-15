@@ -4,6 +4,8 @@ import com.cms.cleaningmanagementsystem.model.Reservation;
 import com.cms.cleaningmanagementsystem.repository.ReservationRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ReservationService {
     private final ReservationRepository reservationRepository;
@@ -15,6 +17,9 @@ public class ReservationService {
     public Reservation getReservationById(String id) {
         return reservationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Reservation not found"));
+    }
+    public List<Reservation> getAllReservations() {
+        return reservationRepository.findAll();
     }
 
     public Reservation createReservation(Reservation reservation) {
