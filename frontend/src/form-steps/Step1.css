@@ -82,9 +82,11 @@
   padding: 10px 20px;
   color: black;
   cursor: pointer;
-  float: right; /* Add this line */
+  float: right;
+  /* Add this line */
   margin-top: 10px;
 }
+
 .back-button {
   font-family: "Montserrat", sans-serif;
   font-size: 14px;
@@ -95,7 +97,8 @@
   padding: 10px 20px;
   color: white;
   cursor: pointer;
-  float: left; /* Add this line */
+  float: left;
+  /* Add this line */
   margin-top: 10px;
 }
 
@@ -129,6 +132,12 @@
   display: inline-block;
   text-align: left;
 }
+
 .total-price {
   color: #4ec96f;
+}
+
+
+.frequency-button.selected {
+  background-color: #d0eed4;
 }
