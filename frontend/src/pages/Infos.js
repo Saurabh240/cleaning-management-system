@@ -2,23 +2,60 @@ import React, { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "./Infos.css";
+import { getToken } from '../tokenservice';
 
 const Infos = () => {
   const [existingUserData, setExistingUserData] = useState({
-    password: "",
-    address: "",
-    email: "",
-    city: "",
-    phone: "",
+    "id": "",
+    "username": "",
+    "email": "",
+    "password": "",
+    "firstName": "",
+    "lastName": "",
+    "address": "",
+    "city": "",
+    "phone": 0,
+    "role": {
+      "id": "",
+      "erole": [
+      ]
+    }
   });
 
   useEffect(() => {
-    fetchUserData();
+    // localStorage.getItem("username")
+    fetchUserData('aafaf');
   }, []);
 
-  const fetchUserData = async (userId) => {
-    // Fetch the existing user's data from the server
-    // This is a placeholder and will need to be replaced with your actual function
+  const fetchUserData = async (username) => {
+    try {
+      const tokenPromise = getToken();
+      const token = await tokenPromise;
+      const formattedToken = JSON.parse(token);
+      if (token) {
+        console.log("Token retrieved successfully");
+        const response = await fetch(
+          "http://localhost:5555/api/users/" + username,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${formattedToken}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+        console.log("Existing user data:", data);
+        setExistingUserData(data)
+        return data; // Return the fetched user data
+      } else {
+        console.log("Token is not available or expired");
+        return null;
+      }
+    } catch (error) {
+      console.log("Error occurred during fetch: ", error);
+      return null;
+    }
     return {
       password: "password",
       address: "123 Main St",
@@ -68,6 +105,37 @@ const Infos = () => {
           {() => (
             <Form>
               <div className="form-line">
+                <div className="input-container long-input">
+                  <label htmlFor="username">Username:</label>
+                  <Field type="text" id="username" name="username" value={existingUserData.username} />
+                  <ErrorMessage
+                    name="username"
+                    component="div"
+                    className="error-message"
+                  />
+                </div>
+              </div>
+              <div className="form-line">
+                <div className="input-container">
+                  <label htmlFor="city">First Name:</label>
+                  <Field type="text" id="firstname" name="firstname" value={existingUserData.firstName} />
+                  <ErrorMessage
+                    name="firstname"
+                    component="div"
+                    className="error-message"
+                  />
+                </div>
+                <div className="input-container">
+                  <label htmlFor="phone">Last Name:</label>
+                  <Field type="text" id="phone" name="phone" value={existingUserData.lastName} />
+                  <ErrorMessage
+                    name="phone"
+                    component="div"
+                    className="error-message"
+                  />
+                </div>
+              </div>
+              {/* <div className="form-line">
                 <div className="input-container">
                   <label htmlFor="password">Mot de passe:</label>
                   <Field type="password" id="password" name="password" />
@@ -77,11 +145,11 @@ const Infos = () => {
                     className="error-message"
                   />
                 </div>
-              </div>
+              </div> */}
               <div className="form-line">
                 <div className="input-container long-input">
                   <label htmlFor="email">Email:</label>
-                  <Field type="email" id="email" name="email" />
+                  <Field type="email" id="email" name="email" value={existingUserData.email} />
                   <ErrorMessage
                     name="email"
                     component="div"
@@ -92,7 +160,7 @@ const Infos = () => {
               <div className="form-line">
                 <div className="input-container long-input">
                   <label htmlFor="address">Adresse:</label>
-                  <Field type="text" id="address" name="address" />
+                  <Field type="text" id="address" name="address" value={existingUserData.address} />
                   <ErrorMessage
                     name="address"
                     component="div"
@@ -103,7 +171,7 @@ const Infos = () => {
               <div className="form-line">
                 <div className="input-container">
                   <label htmlFor="city">Ville:</label>
-                  <Field type="text" id="city" name="city" />
+                  <Field type="text" id="city" name="city" value={existingUserData.city} />
                   <ErrorMessage
                     name="city"
                     component="div"
@@ -112,7 +180,7 @@ const Infos = () => {
                 </div>
                 <div className="input-container">
                   <label htmlFor="phone">Téléphone:</label>
-                  <Field type="text" id="phone" name="phone" />
+                  <Field type="text" id="phone" name="phone" value={existingUserData.phone} />
                   <ErrorMessage
                     name="phone"
                     component="div"

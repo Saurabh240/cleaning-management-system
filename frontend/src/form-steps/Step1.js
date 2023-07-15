@@ -2,6 +2,7 @@ import React from "react";
 import "./Step1.css";
 
 export default function Step1({
+  selectedFrequency,
   selectedService,
   handleServiceChange,
   handleFrequencyChange,
@@ -28,7 +29,10 @@ export default function Step1({
       <div className="frequency-inputs">
         <button
           type="button"
-          className="frequency-button"
+          // className="frequency-button"
+
+          className={`frequency-button ${selectedFrequency == "once" ? "selected" : ""
+            }`}
           value="once"
           onClick={handleFrequencyChange}
         >
@@ -36,7 +40,8 @@ export default function Step1({
         </button>
         <button
           type="button"
-          className="frequency-button"
+          className={`frequency-button ${selectedFrequency == "weekly" ? "selected" : ""
+            }`}
           value="weekly"
           onClick={handleFrequencyChange}
         >
@@ -44,7 +49,8 @@ export default function Step1({
         </button>
         <button
           type="button"
-          className="frequency-button"
+          className={`frequency-button ${selectedFrequency == "bi-weekly" ? "selected" : ""
+            }`}
           value="bi-weekly"
           onClick={handleFrequencyChange}
         >
@@ -52,7 +58,8 @@ export default function Step1({
         </button>
         <button
           type="button"
-          className="frequency-button"
+          className={`frequency-button ${selectedFrequency == "monthly" ? "selected" : ""
+            }`}
           value="monthly"
           onClick={handleFrequencyChange}
         >
