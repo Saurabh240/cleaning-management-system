@@ -12,6 +12,7 @@ import java.util.List;
 public class ReservationController {
     private final ReservationService reservationService;
 
+
     public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
     }
@@ -26,8 +27,8 @@ public class ReservationController {
     }
 
     @PostMapping
-    public Reservation createReservation(@RequestBody Reservation reservation) {
-        return reservationService.createReservation(reservation);
+    public Reservation createReservation(@RequestHeader("Authorization") String token , @RequestBody Reservation reservation) {
+        return reservationService.createReservation(token, reservation);
     }
 
     @PutMapping("/{id}/confirm")

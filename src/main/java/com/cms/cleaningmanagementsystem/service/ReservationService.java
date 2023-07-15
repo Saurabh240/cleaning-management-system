@@ -1,17 +1,25 @@
 package com.cms.cleaningmanagementsystem.service;
 
 import com.cms.cleaningmanagementsystem.model.Reservation;
+import com.cms.cleaningmanagementsystem.model.User;
 import com.cms.cleaningmanagementsystem.repository.ReservationRepository;
+import com.cms.cleaningmanagementsystem.repository.UserRepository;
+import com.cms.cleaningmanagementsystem.security.JwtTokenUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReservationService {
     private final ReservationRepository reservationRepository;
+    private final UserRepository userRepository;
+    private final JwtTokenUtil jwtTokenUtil;
 
-    public ReservationService(ReservationRepository reservationRepository) {
+    public ReservationService(ReservationRepository reservationRepository, JwtTokenUtil jwtTokenUtil,UserRepository userRepository) {
         this.reservationRepository = reservationRepository;
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.userRepository = userRepository;
     }
 
     public Reservation getReservationById(String id) {
@@ -22,7 +30,14 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public Reservation createReservation(Reservation reservation) {
+    public Reservation createReservation(String token, Reservation reservation) {
+        String userNameFromJwtToken = jwtTokenUtil.getUserNameFromJwtToken(token);
+        Optional<User> byUsername = userRepository.findByUsername(userNameFromJwtToken);
+        if (byUsername.isPresent()) {
+            reservation.getUserDetails().setUsername(byUsername.get().getUsername());
+            reservation.getUserDetails().setAddress(byUsername.get().getAddress());
+            reservation.getUserDetails().setCity(byUsername.get().getCity());
+        }
         return reservationRepository.save(reservation);
     }
 
@@ -34,7 +49,7 @@ public class ReservationService {
 
     public Reservation modifyReservation(String id, Reservation newReservation) {
         Reservation reservation = getReservationById(id);
-        reservation.setBookingDateTime(newReservation.getBookingDateTime());
+        reservation.setBookingDate(newReservation.getBookingDate());
         return reservationRepository.save(reservation);
     }
 
