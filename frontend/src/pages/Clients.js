@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import "./Clients.css";
 import { apiService } from '../apiService';
@@ -69,7 +69,7 @@ const Clients = () => {
       console.log("User not found"); // Handle the case where the user data is not available
     }
   };
-  
+
   const closeAddModal = () => {
     setAddModalOpen(false);
   };
@@ -80,7 +80,7 @@ const Clients = () => {
   const closeDeleteConfirmation = () => {
     setUserToDelete(null);
   };
-  
+
 
 
   const fetchExistingUserData = async (username) => {
@@ -99,7 +99,7 @@ const Clients = () => {
             },
           }
         );
-        
+
         const data = await response.json();
         console.log("Existing user data:", data);
         return data; // Return the fetched user data
@@ -119,21 +119,21 @@ const Clients = () => {
       const tokenPromise = getToken(); // Get the token promise
       const token = await tokenPromise; // Await the token promise to get the actual token value        
       if (token) {
-            console.log("Token retrieved successfully");
+        console.log("Token retrieved successfully");
 
-            const data = await apiService.get("http://localhost:5555/api/users/list", token);
-            console.log("Response from server:", data);
-            setUsers(data);
-        } else {
-            console.log("Token is not available or expired");
-            // Add your logic here to handle the case where the token is not available or expired
-        }
+        const data = await apiService.get("http://localhost:5555/api/users/list", token);
+        console.log("Response from server:", data);
+        setUsers(data);
+      } else {
+        console.log("Token is not available or expired");
+        // Add your logic here to handle the case where the token is not available or expired
+      }
     } catch (error) {
-        console.log("Error occurred during fetch: ", error);
+      console.log("Error occurred during fetch: ", error);
     }
-};
+  };
 
-  
+
   const validationSchema = Yup.object({
     username: Yup.string().required("Username is required"),
     password: Yup.string().required("Password is required"),
@@ -156,16 +156,16 @@ const Clients = () => {
       const formattedToken = JSON.parse(token);
       if (token) {
         console.log("Token retrieved successfully");
-    
+
         const response = await fetch("http://localhost:5555/api/users", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${formattedToken}`, 
+            Authorization: `Bearer ${formattedToken}`,
           },
           body: JSON.stringify(values),
         });
-    
+
         const data = await response.json();
         console.log("Response from server:", data);
         setSubmitting(false);
@@ -176,10 +176,10 @@ const Clients = () => {
       console.log("Error occurred during fetch: ", error);
       setSubmitting(false);
     }
-    
+
   };
 
-  const onSubmitModify = async (values, {setSubmitting}) => {
+  const onSubmitModify = async (values, { setSubmitting }) => {
     if (setSubmitting) {
       return;
     }
@@ -191,19 +191,19 @@ const Clients = () => {
       if (token) {
         console.log("Token retrieved successfully");
         const { username, ...userData } = existingUserData;
-        const response = await fetch('http://localhost:5555/api/users/'+username , {
+        const response = await fetch('http://localhost:5555/api/users/' + username, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${formattedToken}`, 
+            Authorization: `Bearer ${formattedToken}`,
           },
           body: JSON.stringify(values),
         });
-    
+
         const data = await response.json();
         console.log("Response from server:", data);
         setSubmitting(false);
-        if(data!=null) {
+        if (data != null) {
           closeModifyModal();
         }
       } else {
@@ -215,10 +215,10 @@ const Clients = () => {
     };
   };
 
-  const deleteUser = async (username, {setSubmitting}) => {
-    if (setSubmitting) {
-      return;
-    }
+  const deleteUser = async (username) => {
+    // if (setSubmitting) {
+    //   return;
+    // }
 
     try {
       const tokenPromise = getToken(); // Get the token promise
@@ -227,13 +227,13 @@ const Clients = () => {
       if (token) {
         console.log("Token retrieved successfully");
         // const { username, ...userData } = existingUserData;
-        const response = await fetch("http://localhost:5555/api/users" +username , {
+        const response = await fetch("http://localhost:5555/api/users/" + userToDelete.username, {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${formattedToken}`, 
+            Authorization: `Bearer ${formattedToken}`,
           }
         });
-    
+
         const data = await response.json();
         console.log("Response from server:", data);
         // setSubmitting(false);
@@ -245,48 +245,130 @@ const Clients = () => {
       // setSubmitting(false);
     };
   };
-  
+
 
   return (
     <>
-<div className="clients-container">
-  <h2 className="title">Clients</h2>
-  <div className="actions-container">
-    <button className="chercher-button">
-      <MdSearch className="icon-chercher" /> Chercher
-    </button>
-    <div onClick={openAddModal} className="add-button">
-      <MdOutlineAdd className="icon-add" />
-    </div>
-  </div>
-  <div className="user-list-container">
-    {users.map((user) => (
-      <div className="user-row" key={user.id}>
-        <div className="user-column">{user.email}</div>
-        <div className="user-column">{user.firstName}</div>
-        <div className="user-column">{user.lastName}</div>
-        <div className="user-column">{user.address}</div>
-        <div className="user-column">{user.city}</div>
-        <div className="user-column">
-          <button
-            className="modifier-button"
-            onClick={() => openModifyModal(user.username)}
-          >
-            Modifier
+      <div className="clients-container">
+        <h2 className="title">Clients</h2>
+        <div className="actions-container">
+          <button className="chercher-button">
+            <MdSearch className="icon-chercher" /> Chercher
           </button>
+          <div onClick={openAddModal} className="add-button">
+            <MdOutlineAdd className="icon-add" />
+          </div>
         </div>
-        <div className="user-column">
-          <button
-            className="supprimer-button"
-            onClick={() => openDeleteConfirmation(user.username)}
-          >
-            Supprimer
-          </button>
-        </div>
+        <div className="user-list-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* <tr className="user-row" >
+                <td className="user-column">{`user.email`}</td>
+                <td className="user-column">{`user.firstName`}</td>
+                <td className="user-column">{`user.lastName`}</td>
+                <td className="user-column">{`user.address`}</td>
+                <td className="user-column">{`user.city`}</td>
+                <td className="user-column">
+                  <button
+                    className="modifier-button"
+                    onClick={() => { }}
+                  >
+                    Modifier
+                  </button>
+                  <br />
+                  <button
+                    className="supprimer-button"
+                    onClick={() => { }}
+                  >
+                    Supprimer
+                  </button>
+                </td>
+              </tr>
+              <tr className="user-row" >
+                <td className="user-column">{`user.email`}</td>
+                <td className="user-column">{`user.firstName`}</td>
+                <td className="user-column">{`user.lastName`}</td>
+                <td className="user-column">{`user.address`}</td>
+                <td className="user-column">{`user.city`}</td>
+                <td className="user-column">
+                  <button
+                    className="modifier-button"
+                    onClick={() => { }}
+                  >
+                    Modifier
+                  </button>
+                  <br />
+                  <button
+                    className="supprimer-button"
+                    onClick={() => { }}
+                  >
+                    Supprimer
+                  </button>
+                </td>
+              </tr> */}
+              {users.map((user) => (
+                <tr className="user-row" key={user.id}>
+                  <td className="user-column">{user.email}</td>
+                  <td className="user-column">{user.firstName}</td>
+                  <td className="user-column">{user.lastName}</td>
+                  <td className="user-column">{user.address}</td>
+                  <td className="user-column">{user.city}</td>
+                  <td className="user-column">
+                    <button
+                      className="modifier-button"
+                      onClick={() => openModifyModal(user.username)}
+                    >
+                      Modifier
+                    </button>
+                    <br />
+                    <button
+                      className="supprimer-button"
+                      onClick={() => openDeleteConfirmation(user.username)}
+                    >
+                      Supprimer
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {/* {users.map((user) => (
+            <div className="user-row" key={user.id}>
+              <div className="user-column">{user.email}</div>
+              <div className="user-column">{user.firstName}</div>
+              <div className="user-column">{user.lastName}</div>
+              <div className="user-column">{user.address}</div>
+              <div className="user-column">{user.city}</div>
+              <div className="user-column">
+                <button
+                  className="modifier-button"
+                  onClick={() => openModifyModal(user.username)}
+                >
+                  Modifier
+                </button>
+              </div>
+              <div className="user-column">
+                <button
+                  className="supprimer-button"
+                  onClick={() => openDeleteConfirmation(user.username)}
+                >
+                  Supprimer
+                </button>
+              </div>
 
-      </div>
-    ))}
-  </div>
+            </div>
+          ))} */}
+        </div>
 
         <Modal
           Modal
@@ -515,7 +597,7 @@ const Clients = () => {
           <h2 className="title-update">Confirmation de suppression:</h2>
           <p>Êtes-vous sûr de vouloir supprimer l'utilisateur {userToDelete && userToDelete.username} ?</p>
           <div className="form-line button-container">
-            <button onClick={deleteUser('aafaf')}>Supprimer</button>
+            <button onClick={deleteUser}>Supprimer</button>
             <button onClick={closeDeleteConfirmation}>Annuler</button>
           </div>
         </Modal>

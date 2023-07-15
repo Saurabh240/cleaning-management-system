@@ -133,6 +133,64 @@ export default function MultiStepForm() {
     setStep(step - 1);
   };
 
+  const handleSubmit = async () => {
+
+
+    let obj = {
+      "customerId": "",
+      "typeOfServices": selectedService,
+      "frequency": selectedFrequency,
+      "options": selectedAddons,
+      "userDetails": {
+        "username": "",
+        "firstName": firstName,
+        "lastName": lastName,
+        "email": email,
+        "phone": telephone,
+        "address": address,
+        "city": city
+      },
+      "couponCode": coupon,
+      "bookingDateTime": "2023-07-11T10:00:00",
+      // "bookingDate": date,
+      // "bookingTime": time,
+      "confirmed": true
+    }
+
+
+    console.log(obj)
+
+    try {
+      const tokenPromise = getToken(); // Get the token promise
+      const token = await tokenPromise; // Await the token promise to get the actual token value
+      const formattedToken = JSON.parse(token);
+      if (token) {
+        console.log("Token retrieved successfully");
+
+        const response = await fetch("http://localhost:5555/api/reservations", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${formattedToken}`,
+          },
+          body: JSON.stringify(obj),
+        });
+
+        const data = await response.json();
+        console.log("Response from server:", data);
+        // setSubmitting(false);
+        setStep(6)
+      } else {
+        console.log("Token is not available or expired");
+      }
+    } catch (error) {
+      console.log("Error occurred during fetch: ", error);
+      // setSubmitting(false);
+    }
+
+  };
+
+
 
   return (
     <section className="form-section">
@@ -142,6 +200,7 @@ export default function MultiStepForm() {
             {step === 1 && (
               <Step1
                 selectedService={selectedService}
+                selectedFrequency={selectedFrequency}
                 handleServiceChange={handleServiceChange}
                 handleFrequencyChange={handleFrequencyChange}
                 handleNextStep={handleNextStep}
@@ -188,9 +247,10 @@ export default function MultiStepForm() {
                 setTime={setTime}
                 handleNextStep={handleNextStep}
                 handleBackStep={handleBackStep}
+                handleSubmit={handleSubmit}
               />
             )}
-            {step === 6 && <Step6/>}
+            {step === 6 && <Step6 />}
           </form>
         </div>
 
